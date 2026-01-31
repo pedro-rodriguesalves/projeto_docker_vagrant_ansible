@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+
+  webproxy:
+    image: SEU_USUARIO/nginx-wp-l4 # Me lembrar de criar o usuário no Docker Hub.
+    container_name: webproxy
+    ports:
+      - "8080:8080"
+    networks:
+      - wordpress
+    depends_on:
+      - webserver
+
+  webserver:
+    image: wordpress:latest
+    container_name: webserver
+    volumes:
+      - app:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wppassword
+      WORDPRESS_DB_NAME: wpdatabase
+    networks:
+      - wordpress
+    depends_on:
+      - database
+
+  database:
+    image: mysql:8.0
+    container_name: database
+    volumes:
+      - my:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wpdatabase
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wppassword
+    networks:
+      - wordpress
+
+volumes:
+  app:
+  my:
+
+networks:
+  wordpress:
+    driver: bridge
+
