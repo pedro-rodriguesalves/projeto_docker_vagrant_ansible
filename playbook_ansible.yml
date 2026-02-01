@@ -57,10 +57,18 @@
         groups: docker
         append: yes
 
-    - name: Copiar docker-compose.yml para a VM
+    - name: Criar diretório do projeto
+      file:
+        path: /opt/wordpress
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0755'
+
+    - name: Copiar docker-compose.yml
       copy:
         src: docker-compose.yml
-        dest: /home/vagrant/docker-compose.yml
+        dest: /opt/wordpress/docker-compose.yml
         owner: vagrant
         group: vagrant
         mode: '0644'
@@ -68,5 +76,5 @@
     - name: Subir containers com Docker Compose
       command: docker compose up -d
       args:
-        chdir: /home/vagrant
+        chdir: /opt/wordpress
 

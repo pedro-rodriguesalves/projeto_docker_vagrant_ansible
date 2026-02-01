@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   webproxy:
-    image: SEU_USUARIO/nginx-wp-l4 # Me lembrar de criar o usuário no Docker Hub.
+    image: pedrohralves/projeto-pedro-felipe
     container_name: webproxy
     ports:
       - "8080:8080"

@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.hostname = "pedro.felipe"
   config.vm.network "private_network", ip: "192.168.56.163"
-  config.vm.provider "virtualbox" do |v|
+  config.vm.provider "virtualbox" do |vb|
     vb.memory = "1024"
     vb.gui = false
     vb.name = config.vm.hostname
