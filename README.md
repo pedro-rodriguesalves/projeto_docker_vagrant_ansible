@@ -33,6 +33,7 @@ O projeto inclui um Vagrantfile que define a criação de uma máquina virtual:
 
 ## docker-compose.yml 
 
+- name: projeto-pf
 - Criação de Containers.
 - Criação de Volumes.
 
