@@ -96,8 +96,8 @@ O projeto inclui um Vagrantfile que define a criação de uma máquina virtual:
 
 1. **Clone este repositório:**
    ```bash
-   git clone https://github.com/pedro-rodriguesalves/projeto_vagrant_ansible.git
-   cd projeto_vagrant_ansible
+   git clone https://github.com/pedro-rodriguesalves/projeto_docker_vagrant_ansible.git
+   cd projeto_docker_vagrant_ansible
    
 2. **Suba as VMs:**
    ```bash
