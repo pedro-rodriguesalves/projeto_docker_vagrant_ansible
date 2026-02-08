@@ -1,4 +1,4 @@
-# Projeto DevOps com Vagrant e Ansible
+# Projeto DevOps com Docker, Vagrant e Ansible 
 
 **AUTORIDADES MÁXIMAS:** Pedro Henrique Rodrigues Alves - (20241380026) e Felipe da Silva Oliveira - (20241380003).
 
