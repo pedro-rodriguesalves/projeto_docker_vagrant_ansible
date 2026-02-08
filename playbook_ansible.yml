@@ -1,62 +1,79 @@
 ---
+# Playbook responsável por provisionar a VM.
+# Instalando Docker, Docker Compose e subindo o Wordpress.
 - name: Provisionar VM com Docker e Wordpress
+
+  # Aplica as tarefas a todos os hosts definidos pelo Vagrant.
   hosts: all
+
+  # Executa as tarefas com privilégios de superusuário (root).
   become: true
 
   tasks:
-
+    # Atualiza a lista de pacotes disponíveis nos repositórios.
     - name: Atualizar lista de pacotes
       apt:
         update_cache: yes
 
+    # Atualiza os pacotes já instalados para suas versões mais recentes.
     - name: Atualizar pacotes do sistema
       apt:
         upgrade: dist
 
+    # Instala dependências básicas necessárias para adicionar repositórios HTTPS.
     - name: Instalar dependências básicas
       apt:
         name:
-          - ca-certificates
-          - curl
-          - gnupg
-          - lsb-release
+          - ca-certificates   # Certificados de segurança.
+          - curl              # Ferramenta para transferência de dados via URL.
+          - gnupg             # Gerenciamento de chaves GPG.
+          - lsb-release       # Identificação da distribuição Linux.
         state: present
 
+    # Adiciona a chave GPG oficial do Docker.
+    # Garante a autenticidade dos pacotes baixados.
     - name: Adicionar chave GPG do Docker
       apt_key:
         url: https://download.docker.com/linux/debian/gpg
         state: present
 
+    # Adiciona o repositório oficial do Docker ao sistema.
     - name: Adicionar repositório do Docker
       apt_repository:
         repo: "deb [arch=amd64] https://download.docker.com/linux/debian bookworm stable"
         state: present
 
+    # Atualiza novamente o cache de pacotes após adicionar o repositório do Docker.
     - name: Atualizar cache após adicionar repositório Docker
       apt:
         update_cache: yes
 
+    # Instala o Docker Engine e o Docker Compose v2 (plugin).
     - name: Instalar Docker e Docker Compose v2
       apt:
         name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-compose-plugin
+          - docker-ce                  # Docker Engine.
+          - docker-ce-cli              # Cliente Docker.
+          - containerd.io              # Runtime de containers.
+          - docker-compose-plugin      # Docker Compose v2.
         state: present
 
+    # Garante que o serviço Docker esteja ativo e configurado para iniciar com o sistema.
     - name: Habilitar e iniciar Docker
       service:
         name: docker
         state: started
         enabled: yes
 
+    # Adiciona o usuário vagrant ao grupo docker.
+    # Permite executar comandos docker sem sudo.
     - name: Adicionar usuário vagrant ao grupo docker
       user:
         name: vagrant
         groups: docker
         append: yes
 
+    # Cria o diretório onde ficará o projeto Wordpress.
     - name: Criar diretório do projeto
       file:
         path: /opt/wordpress
@@ -65,6 +82,7 @@
         group: vagrant
         mode: '0755'
 
+    # Copia o arquivo docker-compose.yml para a VM.
     - name: Copiar docker-compose.yml
       copy:
         src: docker-compose.yml
@@ -73,6 +91,7 @@
         group: vagrant
         mode: '0644'
 
+    # Executa o Docker Compose para subir os containers em segundo plano.
     - name: Subir containers com Docker Compose
       command: docker compose up -d
       args:

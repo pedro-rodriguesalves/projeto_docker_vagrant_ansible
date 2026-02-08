@@ -1,50 +1,90 @@
+# Nome do projeto Docker Compose.
 name: projeto-pf
 
 services:
 
+  # Serviço responsável pelo proxy / frontend.
   webproxy:
+    # Imagem Docker personalizada hospedada no Docker Hub.
     image: pedrohralves/projeto-pedro-felipe
+
+    # Nome fixo do container.
     container_name: webproxy
+
+    # Mapeamento de portas.
+    # Porta 8080 do host → porta 8080 do container.
     ports:
       - "8080:8080"
+
+    # Conecta o container à rede wordpress.
     networks:
       - wordpress
+
+    # Define dependência do serviço webserver.
+    # Garante que o webserver seja iniciado antes.
     depends_on:
       - webserver
 
+  # Serviço do servidor Wordpress.
   webserver:
+    # Imagem oficial do Wordpress (versão mais recente).
     image: wordpress:latest
+
+    # Nome fixo do container.
     container_name: webserver
+
+    # Volume para persistência dos arquivos do Wordpress.
     volumes:
       - app:/var/www/html
+
+    # Variáveis de ambiente para configuração do Wordpress.
     environment:
-      WORDPRESS_DB_HOST: database
-      WORDPRESS_DB_USER: wpuser
-      WORDPRESS_DB_PASSWORD: wppassword
-      WORDPRESS_DB_NAME: wpdatabase
+      WORDPRESS_DB_HOST: database          # Host do banco de dados.
+      WORDPRESS_DB_USER: wpuser            # Usuário do banco.
+      WORDPRESS_DB_PASSWORD: wppassword    # Senha do banco.
+      WORDPRESS_DB_NAME: wpdatabase        # Nome do banco de dados.
+
+    # Conecta o container à rede wordpress.
     networks:
       - wordpress
+
+    # Define dependência do serviço de banco de dados.
     depends_on:
       - database
 
+  # Serviço de banco de dados MySQL.
   database:
+    # Imagem oficial do MySQL versão 8.0.
     image: mysql:8.0
+
+    # Nome fixo do container.
     container_name: database
+
+    # Volume para persistência dos dados do banco.
     volumes:
       - my:/var/lib/mysql
+
+    # Variáveis de ambiente para inicialização do MySQL.
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wpdatabase
-      MYSQL_USER: wpuser
-      MYSQL_PASSWORD: wppassword
+      MYSQL_ROOT_PASSWORD: rootpassword    # Senha do usuário root.
+      MYSQL_DATABASE: wpdatabase           # Banco de dados inicial.
+      MYSQL_USER: wpuser                   # Usuário do banco.
+      MYSQL_PASSWORD: wppassword           # Senha do usuário.
+
+    # Conecta o container à rede wordpress.
     networks:
       - wordpress
 
-volumes:
-  app:
-  my:
 
+# Definição dos volumes persistentes.
+volumes:
+  app:    # Volume usado pelo Wordpress.
+  my:     # Volume usado pelo MySQL.
+
+
+# Definição da rede Docker.
 networks:
   wordpress:
+    # Tipo de driver da rede.
     driver: bridge
 
